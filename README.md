@@ -21,3 +21,4 @@ Calculate the bleu value to evaluate machine translation
 python calculatebleu.py path/to/candidate.txt path/to/reference
 ```
 note: the first parameter is a simple file, but the second parameter is the folder path containing all the reference files.
+The code is based on this paper [BLEU: a Method for Automatic Evaluation of Machine Translation](https://aclweb.org/anthology/P/P02/P02-1040.pdf)
