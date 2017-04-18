@@ -9,7 +9,7 @@ python nbclassify.py train-text.txt
 ```
 note: nblearn.py and nbclassify.py should be in the same folder.
 ## hmm
-Training Hiden Markov Model to do part-of-speech given training set.
+Training Hidden Markov Model to do part-of-speech given training set.
 ```
 python hmmlearn.py hw5-data-corpus/catalan_corpus_train_tagged.txt
 python hmmdecode.py hw5-data-corpus/catalan_corpus_dev_raw.txt
