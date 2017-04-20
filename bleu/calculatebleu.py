@@ -7,9 +7,12 @@ def reference_files(path):
     '''
         reference files path generator
     '''
-    for file in os.listdir(path):
-        if os.path.isfile(os.path.join(path,file)):
-            yield os.path.join(path,file)
+    if os.path.isfile(path):
+        yield path
+    else:
+        for file in os.listdir(path):
+            if os.path.isfile(os.path.join(path,file)):
+                yield os.path.join(path,file)
 
 def get_n_gram(N,s):
     '''
