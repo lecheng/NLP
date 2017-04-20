@@ -27,13 +27,6 @@ def get_n_gram(N,s):
         res += [" ".join(l)]
     return res
 
-def geometric_mean(nums):
-    '''
-        calculate geometric mean of a list
-    '''
-    if len(nums) == 0:    return 0
-    return (reduce(lambda x,y:x*y,nums)) ** (1.0/len(nums))
-
 def calculate_bleu(candidate_path,reference_path,N=4):
     '''
         calculate the bleu value
@@ -44,20 +37,26 @@ def calculate_bleu(candidate_path,reference_path,N=4):
         total = 0.0
         total2 = 0.0
         for j in range(N):
-            plist = []
-            for reference_line in reference_lines:
-                denominator = 0.0
-                numerator = 0.0
-                for i in range(len(candidate_lines)):
-                    candidate_count = Counter(get_n_gram(j+1,candidate_lines[i]))
-                    reference_count = Counter(get_n_gram(j+1,reference_line[i]))
-                    temp = sum([min(candidate_count[k],reference_count[k]) for k in reference_count & candidate_count])
-                    numerator += temp
-                    denominator += sum(candidate_count.values())
-                p = numerator / denominator
-                # print "numerator:" + str(numerator) + " denominator:" + str(denominator)
-                plist += [p]
-            total += ((1.0/N)*math.log(geometric_mean(plist)))
+            denominator = 0.0
+            numerator = 0.0
+            for i in range(len(candidate_lines)):
+                candidate_count = Counter(get_n_gram(j+1,candidate_lines[i]))
+                clip_count = 0.0
+                # print candidate_count
+                for k in candidate_count:
+                    # print k
+                    max_ref_count = 0.0
+                    for reference_line in reference_lines:
+                        reference_count = Counter(get_n_gram(j+1,reference_line[i]))
+                        max_ref_count = max(reference_count[k],max_ref_count)
+                    clip_count += min(candidate_count[k],max_ref_count)
+                # print clip_count
+                numerator += clip_count
+                denominator += sum(candidate_count.values())
+            p = numerator / denominator
+            # print "numerator:" + str(numerator) + " denominator:" + str(denominator)
+            total += ((1.0/N)*math.log(p))
+
         can_word_count_sum = 0.0
         best_match_sum = 0.0
         for i in range(len(candidate_lines)):
@@ -92,8 +91,8 @@ if __name__ == '__main__':
         candidate_path = sys.argv[1]
         reference_path = sys.argv[2]
     else:
-        candidate_path = 'data/greek/candidate-2.txt'
-        reference_path = 'data/greek/reference'
+        candidate_path = 'data/portuguese/candidate-3.txt'
+        reference_path = 'data/portuguese/reference'
     with open('bleu_out.txt','w') as f:
         f.write(str(calculate_bleu(candidate_path,reference_path)))
         f.close()
